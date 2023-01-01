@@ -1,52 +1,53 @@
-use eframe::epaint::vec2;
-use eframe:: {App, run_native};
-use eframe::egui:: {CentralPanel, ScrollArea};
+mod headlines; // Brings in the headlines.rs module
 
-struct Headlines {
-	articles: Vec<NewsCardData>
-}
+use eframe::egui::{Label, ScrollArea, CentralPanel, Ui, Separator, TopBottomPanel, Context, RichText, TextStyle};
+use eframe::epaint::{vec2};
+use eframe:: {run_native, App};
 
-struct NewsCardData {
-	title: String,
-	desc: String,
-	url: String
-}
-
-impl Headlines {
-	fn dummy_data() -> Headlines {
-		// 20 objects lazily instantiated in a "for loop" like iterator.
-		let iter = (0..20).map(|a| NewsCardData{
-			title: format!("title{}", a),
-			desc: format!("description{}", a),
-			url: format!("https://examples.com{}", a)
-		});
-
-		Headlines { 
-			articles: Vec::from_iter(iter)
-		}
-	}
-}
+use headlines:: {Headlines};
+use headlines::PADDING;
 
 impl App for Headlines {
-	fn update(&mut self, ctx: &eframe::egui::Context, _frame: &mut eframe::Frame) {
+	fn update(&mut self, ctx: &Context, _frame: &mut eframe::Frame) {	
+		// Migrate to "OnStart()"
+		self.configure_fonts(ctx);
+		self.render_top_panel(ctx);
+	
 		CentralPanel::default().show(ctx, |ui| {
+
+			render_header(ui);
 			
-			ui.label("Top News Headlines");
-			
-			ScrollArea::always_show_scroll(ScrollArea::new([true; 2]), false).show(ui, |ui| {
-				for a in &self.articles {
-					ui.separator();
-					ui.label(&a.title);
-					ui.label(&a.url);
-					ui.label(&a.desc);
-				};
-			});		
+			ScrollArea::vertical().show(ui, |ui| {
+				self.render_news_cards(ui);
+			});
+
+			render_footer(ui, ctx);
 		});
 	}
+}
+
+fn render_footer(ui: &mut Ui, ctx: &Context) {
+	TopBottomPanel::bottom("footer").show(ctx, |ui | {
+		ui.vertical_centered(|ui | {
+			ui.add_space(3.);
+			ui.add(Label::new(RichText::new("API Source: newsapi.org").text_style(TextStyle::Monospace)));
+			ui.hyperlink_to("Made with egui.", "https://github.com/emilk/egui");
+			ui.hyperlink_to("Written character by character by me, Ant!", "https://antskilton.github.io/");
+			ui.add_space(3.);
+		})
+	});
+}
+
+fn render_header(ui: &mut Ui) {
+	ui.vertical_centered(|ui |ui.heading("Top News Headlines"));
+	ui.add_space(PADDING);
+	
+	let sep = Separator::default().spacing(20.);
+	ui.add(sep);
 }
 
 fn main() {
-	let app = Headlines::dummy_data();
+	let app = Headlines::new_dummy_data();
 	let mut native_options = eframe::NativeOptions::default();
 	native_options.initial_window_size = Some(vec2(540., 960.)); // The dot turns it from i32 into a float (f32)
 
