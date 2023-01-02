@@ -1,6 +1,6 @@
 mod headlines; // Brings in the headlines.rs module
 
-use eframe::egui::{Label, ScrollArea, CentralPanel, Ui, Separator, TopBottomPanel, Context, RichText, TextStyle};
+use eframe::egui::{Label, ScrollArea, CentralPanel, Ui, Separator, TopBottomPanel, Context, RichText, TextStyle, Visuals};
 use eframe::epaint::{vec2};
 use eframe:: {run_native, App};
 
@@ -9,9 +9,22 @@ use headlines::PADDING;
 
 impl App for Headlines {
 	fn update(&mut self, ctx: &Context, _frame: &mut eframe::Frame) {	
+		
+		if self.config.is_dark_mode {
+			ctx.set_visuals(Visuals::dark());
+		} 
+		else {
+			ctx.set_visuals(Visuals::light());
+		}
+
+		if !self.is_api_key_initialised {
+			self.render_config(ctx);
+			return;
+		}
+
 		// Migrate to "OnStart()"
 		self.configure_fonts(ctx);
-		self.render_top_panel(ctx);
+		self.render_top_panel(ctx, _frame);
 	
 		CentralPanel::default().show(ctx, |ui| {
 
@@ -21,12 +34,12 @@ impl App for Headlines {
 				self.render_news_cards(ui);
 			});
 
-			render_footer(ui, ctx);
+			render_footer(ctx);
 		});
 	}
 }
 
-fn render_footer(ui: &mut Ui, ctx: &Context) {
+fn render_footer(ctx: &Context) {
 	TopBottomPanel::bottom("footer").show(ctx, |ui | {
 		ui.vertical_centered(|ui | {
 			ui.add_space(3.);
@@ -47,6 +60,9 @@ fn render_header(ui: &mut Ui) {
 }
 
 fn main() {
+	// Initialise tracing AKA debug.log()
+	tracing_subscriber::fmt::init();
+
 	let app = Headlines::new_dummy_data();
 	let mut native_options = eframe::NativeOptions::default();
 	native_options.initial_window_size = Some(vec2(540., 960.)); // The dot turns it from i32 into a float (f32)
