@@ -4,8 +4,25 @@ use eframe::egui::{Label, ScrollArea, CentralPanel, Ui, Separator, TopBottomPane
 use eframe::epaint::{vec2};
 use eframe:: {run_native, App};
 
-use headlines:: {Headlines};
+use headlines:: {Headlines, NewsCardData};
 use headlines::PADDING;
+use newsapi::{NewsApi};
+
+fn fetch_news(api_key: &str, articles: &mut Vec<NewsCardData>) {
+	if let Ok(response) = NewsApi::new(api_key).fetch() {
+		let response_articles = response.get_articles();
+
+		for article in response_articles.iter() {
+			let news = NewsCardData {
+    		title: article.get_title().to_string(),
+    		desc: article.get_published_at().to_string(),
+    		url: article.gert_url().to_string(),
+			};
+
+			articles.push(news);
+		}
+	}
+}
 
 impl App for Headlines {
 	fn update(&mut self, ctx: &Context, _frame: &mut eframe::Frame) {	
@@ -25,6 +42,7 @@ impl App for Headlines {
 		// Migrate to "OnStart()"
 		self.configure_fonts(ctx);
 		self.render_top_panel(ctx, _frame);
+		fetch_news(&self.config.api_key, &mut self.articles);
 	
 		CentralPanel::default().show(ctx, |ui| {
 
