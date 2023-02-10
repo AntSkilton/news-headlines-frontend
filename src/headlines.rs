@@ -17,6 +17,7 @@ pub struct Headlines {
 	pub articles: Vec<NewsCardData>,
     pub config: HeadlinesConfig,
     pub is_api_key_initialised: bool,
+    pub is_app_initialised: bool
 }
 
 pub struct NewsCardData {
@@ -35,23 +36,24 @@ impl Default for HeadlinesConfig {
 }
 
 impl Headlines {
-	//pub fn init(){}
-    
-    pub fn new_dummy_data() -> Headlines {
+	
+    pub fn load_config() -> Headlines {
 		// Load config data
         let loaded_config: HeadlinesConfig = confy::load("headlines", "headlines_config").unwrap_or_default();
         
         // 20 objects lazily instantiated in a "for loop" like iterator.
-		let iter = (0..20).map(|a| NewsCardData{
-			title: format!("title{}", a),
-			desc: format!("description{}", a),
-			url: format!("https://examples.com{}", a)
-		});
+		// let iter = (0..20).map(|a| NewsCardData{
+		// 	title: format!("title{}", a),
+		// 	desc: format!("description{}", a),
+		// 	url: format!("https://examples.com{}", a)
+		// });
 
 		Headlines { 
             is_api_key_initialised: !loaded_config.api_key.is_empty(),
-			articles: Vec::from_iter(iter),
+			articles: Vec::new(),
+            // articles: Vec::from_iter(iter),
             config: loaded_config,
+            is_app_initialised: false,
 		}
 	}
 

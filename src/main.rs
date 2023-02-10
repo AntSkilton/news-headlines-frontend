@@ -39,11 +39,13 @@ impl App for Headlines {
 			return;
 		}
 
-		// Migrate to "OnStart()"
-		self.configure_fonts(ctx);
-		self.render_top_panel(ctx, _frame);
-		fetch_news(&self.config.api_key, &mut self.articles);
-	
+		if !self.is_app_initialised {
+			self.configure_fonts(ctx);
+			self.render_top_panel(ctx, _frame);
+			fetch_news(&self.config.api_key, &mut self.articles);
+			self.is_app_initialised = true;
+		}
+
 		CentralPanel::default().show(ctx, |ui| {
 
 			render_header(ui);
@@ -81,7 +83,7 @@ fn main() {
 	// Initialise tracing AKA debug.log()
 	tracing_subscriber::fmt::init();
 
-	let app = Headlines::new_dummy_data();
+	let app = Headlines::load_config();
 	let mut native_options = eframe::NativeOptions::default();
 	native_options.initial_window_size = Some(vec2(540., 960.)); // The dot turns it from i32 into a float (f32)
 
