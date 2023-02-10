@@ -136,10 +136,6 @@ impl Headlines {
                     if theme_btn.clicked() {
                         self.config.is_dark_mode = !self.config.is_dark_mode; // Inverts the dark mode config
                     }
-
-                    if self.config.is_dark_mode {
-                        
-                    }
                 });
             });
             
