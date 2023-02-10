@@ -883,18 +883,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "headlines"
-version = "0.1.0"
-dependencies = [
- "confy",
- "eframe",
- "newsapi",
- "serde",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "ident_case"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1129,6 +1117,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3cf2aae958bd232cac5069850591667ad422d263686d75b52a065f9badeee5a3"
 dependencies = [
  "jni-sys",
+]
+
+[[package]]
+name = "news-headlines-frontend"
+version = "0.1.0"
+dependencies = [
+ "confy",
+ "eframe",
+ "newsapi",
+ "serde",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
