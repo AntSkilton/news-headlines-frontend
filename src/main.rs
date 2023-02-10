@@ -41,10 +41,11 @@ impl App for Headlines {
 
 		if !self.is_app_initialised {
 			self.configure_fonts(ctx);
-			self.render_top_panel(ctx, _frame);
 			fetch_news(&self.config.api_key, &mut self.articles);
 			self.is_app_initialised = true;
 		}
+
+		self.render_top_panel(ctx, _frame);
 
 		CentralPanel::default().show(ctx, |ui| {
 
