@@ -66,7 +66,7 @@ fn render_footer(ctx: &Context) {
 			ui.add_space(3.);
 			ui.add(Label::new(RichText::new("API Source: newsapi.org").text_style(TextStyle::Monospace)));
 			ui.hyperlink_to("Made with egui.", "https://github.com/emilk/egui");
-			ui.hyperlink_to("Written character by character by me, Ant!", "https://antskilton.github.io/");
+			ui.hyperlink_to("Written by Ant =)", "https://github.com/AntSkilton/news-headlines-frontend");
 			ui.add_space(3.);
 		})
 	});
