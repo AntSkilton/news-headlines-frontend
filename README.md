@@ -17,7 +17,7 @@ This project is the rust standalone frontend GUI using eGUI which consumes my ot
 - Ensure your rust environment is setup
 - `$ cargo run`
 - Enter your API key in the GUI from newsapi.org
-  ![image](src/keyPopup.png)
+![image](src/keyPopup.png)
 
 ### Known Issues
 
